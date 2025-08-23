@@ -27,10 +27,9 @@ app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
 // Start server only after DB is connected
 const PORT = process.env.PORT || 3001;
 
-await connectCloudinary();
-
 const startServer = async () => {
   try {
+    await connectCloudinary();
     await connectDB(); // ✅ wrapped inside async
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (error) {
