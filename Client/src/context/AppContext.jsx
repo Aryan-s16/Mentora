@@ -94,18 +94,22 @@ export const AppContextProvider = (props) => {
   const fetchUserEnrolledCourses = async () => {
     try {
       const token = await getToken();
+      const response = await axios.get(
+        backendUrl + "/api/user/enrolled-courses",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-      const data = await axios.get(backendUrl + "/api/user/enrolled-courses", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (data.success) {
-        setEnrolledCourses(data.enrolledCourses.reverse());
+      
+      if (response.data && response.data.enrolledCourses) {
+        setEnrolledCourses(response.data.enrolledCourses.reverse());
       } else {
-        toast.error(data.message);
+        toast.error(response.data?.message || "No enrolled courses found.");
       }
     } catch (error) {
-      toast.error(error.message);
+      console.error("Error fetching courses:", error);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
 
